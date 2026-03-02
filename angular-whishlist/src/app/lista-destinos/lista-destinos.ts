@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DestinoViaje } from '../destino-viaje/destino-viaje';
+import { DestinoViajeModel } from '../models/destino-viaje.model';
 
 @Component({
   selector: 'app-lista-destinos',
@@ -10,9 +11,14 @@ import { DestinoViaje } from '../destino-viaje/destino-viaje';
   styleUrl: './lista-destinos.css',
 })
 export class ListaDestinos {
-  destinos!: string[];
+  destinos!: DestinoViajeModel[];
 
   constructor() {
-    this.destinos = ['Francisco Morazán', 'Copán', 'Lempira', 'Yoro'];
+    this.destinos = [];
+  }
+
+  guardar(nombre: string, url: string): boolean {
+    this.destinos.push(new DestinoViajeModel(nombre, url));
+    return false;
   }
 }

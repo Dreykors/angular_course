@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostBinding } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DestinoViajeModel } from '../models/destino-viaje.model';
 
 @Component({
   selector: 'app-destino-viaje',
@@ -9,7 +10,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './destino-viaje.css',
 })
 export class DestinoViaje {
-  @Input() nombre!: string;
+  @Input() destino!: DestinoViajeModel;
+  @HostBinding('attr.class') cssClass = 'col-12 col-md-4 mb-4';
 
   constructor() {}
 }

@@ -1,2 +1,105 @@
-/* You can add global styles to this file, and also import other style files */
-@import 'bootstrap/dist/css/bootstrap.min.css';
+/* Bootstrap 5.3+ (recomendado: agregarlo en angular.json -> styles, pero esto funciona) */
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* card details start */
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800;900&family=Roboto+Condensed:wght@400;700&display=swap");
+
+:root {
+    --card-bg: #ffffff;
+    --section-bg: #ecf0f1;
+    --accent: #1abc9c;
+    --text-muted: #747373;
+    --shadow: 0 2px 5px rgba(0, 0, 0, 0.16), 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+section {
+    padding: 100px 0;
+}
+
+.details-card {
+    background: var(--section-bg);
+}
+
+.card-content {
+    background: var(--card-bg);
+    border: 0;
+    box-shadow: var(--shadow);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.card-img {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.card-img img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.card-img span {
+    position: absolute;
+    top: 15%;
+    left: 12%;
+    transform: translate(-50%, -50%);
+
+    background: var(--accent);
+    padding: 0.375rem 0.5rem;
+    color: #fff;
+    font-size: 0.75rem;
+    border-radius: 0.375rem;
+}
+
+.card-img span h4 {
+    font-size: 0.75rem;
+    margin: 0;
+    padding: 0.5rem 0.25rem;
+    line-height: 1;
+}
+
+.card-desc {
+    padding: 1.25rem;
+}
+
+.card-desc h3 {
+    color: #000;
+    font-weight: 600;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    margin: 0 0 0.5rem 0;
+}
+
+.card-desc p {
+    color: var(--text-muted);
+    font-family: "Raleway", sans-serif;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0 0 1.25rem 0;
+}
+
+.btn-card {
+    display: inline-block;
+    background-color: var(--accent);
+    color: #fff;
+    box-shadow: var(--shadow);
+    padding: 0.75rem 1.5rem;
+    font-size: 0.85rem;
+    border: 0;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    text-decoration: none;
+
+    transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.btn-card:hover {
+    background-color: orange;
+    color: #fff;
+}
+
+/* End card section */
