@@ -1,11 +1,12 @@
 import { Component, Input, HostBinding, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DestinoViajeModel } from '../models/destino-viaje.model';
+import { RouterLinkWithHref } from '@angular/router';
 
 @Component({
   selector: 'app-destino-viaje',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLinkWithHref],
   templateUrl: './destino-viaje.html',
   styleUrl: './destino-viaje.css',
 })
