@@ -1,9 +1,16 @@
 export class DestinoViajeModel {
-  nombre: string;
-  imagenUrl: string;
+  private selected!: boolean;
 
-  constructor(n: string, u: string) {
-    this.nombre = n;
-    this.imagenUrl = u;
+  constructor(
+    public nombre: string,
+    public u: string,
+  ) {}
+
+  isSelected(): boolean {
+    return this.selected;
+  }
+
+  setSelected(s: boolean) {
+    this.selected = s;
   }
 }
