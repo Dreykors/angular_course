@@ -1,0 +1,14 @@
+<div class="container py-4">
+    <h2>Módulo de Vuelos</h2>
+
+    <nav class="mb-3">
+        <a class="btn btn-outline-primary btn-sm me-2" [routerLink]="['main']">Main</a>
+        <a class="btn btn-outline-primary btn-sm me-2" [routerLink]="['mas-info']">Más info</a>
+        <a class="btn btn-outline-primary btn-sm me-2" [routerLink]="['detalle', 5]">Vuelo 5</a>
+        <a class="btn btn-outline-primary btn-sm" [routerLink]="['detalle', 10]">Vuelo 10</a>
+    </nav>
+
+    <p>vuelos works!</p>
+
+    <router-outlet></router-outlet>
+</div>
