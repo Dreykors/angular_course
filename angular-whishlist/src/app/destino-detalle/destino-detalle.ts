@@ -2,10 +2,9 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-destino-detalle',
+  standalone: true,
   imports: [],
   templateUrl: './destino-detalle.html',
   styleUrl: './destino-detalle.css',
 })
-export class DestinoDetalle {
-
-}
+export class DestinoDetalle {}
