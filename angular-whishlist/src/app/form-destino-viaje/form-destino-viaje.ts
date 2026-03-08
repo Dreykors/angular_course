@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Output,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   AbstractControl,
@@ -8,6 +16,8 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { fromEvent } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { DestinoViajeModel } from '../models/destino-viaje.model';
 
 @Component({
@@ -17,12 +27,32 @@ import { DestinoViajeModel } from '../models/destino-viaje.model';
   templateUrl: './form-destino-viaje.html',
   styleUrl: './form-destino-viaje.css',
 })
-export class FormDestinoViaje {
+export class FormDestinoViaje implements AfterViewInit {
   @Output() onItemAdded = new EventEmitter<DestinoViajeModel>();
+
+  @ViewChild('nombreInput', { static: true })
+  nombreInput!: ElementRef<HTMLInputElement>;
 
   private fb = inject(FormBuilder);
 
   minLongitud = 3;
+
+  destinosDisponibles: string[] = [
+    'Barcelona',
+    'Madrid',
+    'Barranquilla',
+    'Bogotá',
+    'Buenos Aires',
+    'Montevideo',
+    'Lima',
+    'Santiago',
+    'Cartagena',
+    'Valencia',
+    'Sevilla',
+    'Málaga',
+  ];
+
+  searchResults: string[] = [];
 
   fg = this.fb.group({
     nombre: [
@@ -40,6 +70,32 @@ export class FormDestinoViaje {
     this.fg.valueChanges.subscribe((value) => {
       console.log('Cambios en el formulario:', value);
     });
+  }
+
+  ngAfterViewInit(): void {
+    fromEvent<InputEvent>(this.nombreInput.nativeElement, 'input')
+      .pipe(
+        map((event) => (event.target as HTMLInputElement).value.trim()),
+        filter((text) => text.length >= 4),
+        debounceTime(200),
+        distinctUntilChanged(),
+        map((text) =>
+          this.destinosDisponibles.filter((destino) =>
+            destino.toLowerCase().includes(text.toLowerCase()),
+          ),
+        ),
+      )
+      .subscribe((results) => {
+        this.searchResults = results;
+      });
+
+    fromEvent<InputEvent>(this.nombreInput.nativeElement, 'input')
+      .pipe(map((event) => (event.target as HTMLInputElement).value.trim()))
+      .subscribe((text) => {
+        if (text.length < 4) {
+          this.searchResults = [];
+        }
+      });
   }
 
   nombreValidator(control: AbstractControl): ValidationErrors | null {
@@ -64,6 +120,11 @@ export class FormDestinoViaje {
     };
   }
 
+  seleccionarSugerencia(sugerencia: string): void {
+    this.fg.patchValue({ nombre: sugerencia });
+    this.searchResults = [];
+  }
+
   guardar(): void {
     if (this.fg.invalid) {
       this.fg.markAllAsTouched();
@@ -80,5 +141,7 @@ export class FormDestinoViaje {
       nombre: '',
       url: '',
     });
+
+    this.searchResults = [];
   }
 }

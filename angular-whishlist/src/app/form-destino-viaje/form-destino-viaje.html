@@ -9,8 +9,15 @@
                 <form [formGroup]="fg" (ngSubmit)="guardar()">
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre</label>
-                        <input id="nombre" type="text" class="form-control" placeholder="Ingresar nombre..."
-                            formControlName="nombre" />
+                        <input #nombreInput id="nombre" type="text" class="form-control"
+                            placeholder="Ingresar nombre..." formControlName="nombre" />
+
+                        <ul class="list-group mt-2" *ngIf="searchResults.length > 0">
+                            <li class="list-group-item list-group-item-action" *ngFor="let r of searchResults"
+                                (click)="seleccionarSugerencia(r)" style="cursor: pointer">
+                                {{ r }}
+                            </li>
+                        </ul>
 
                         <div class="text-danger mt-1" *ngIf="fg.get('nombre')?.invalid && fg.get('nombre')?.touched">
                             <div *ngIf="fg.get('nombre')?.hasError('required')">

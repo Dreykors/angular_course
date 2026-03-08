@@ -7,4 +7,17 @@
         <app-destino-viaje *ngFor="let d of destinos; let i = index" [destino]="d" [idx]="i + 1"
             (clicked)="elegido($event)"></app-destino-viaje>
     </div>
+
+    <hr class="my-4" />
+
+    <div class="row">
+        <div class="col-12">
+            <h4>Actividad</h4>
+            <ul>
+                <li *ngFor="let update of updates">
+                    {{ update }}
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
