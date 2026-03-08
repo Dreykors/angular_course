@@ -1,7 +1,11 @@
-import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLinkWithHref } from '@angular/router';
+import { Store } from '@ngrx/store';
+
 import { DestinoViajeModel } from '../models/destino-viaje.model';
+import { AppState } from '../store/destinos-viajes.state';
+import { voteDownDestino, voteUpDestino } from '../store/destinos-viajes.actions';
 
 @Component({
   selector: 'app-destino-viaje',
@@ -19,6 +23,8 @@ export class DestinoViaje {
   @Output() clicked = new EventEmitter<DestinoViajeModel>();
   @Output() remove = new EventEmitter<DestinoViajeModel>();
 
+  private store = inject(Store<AppState>);
+
   ir(): boolean {
     this.clicked.emit(this.destino);
     return false;
@@ -26,5 +32,15 @@ export class DestinoViaje {
 
   borrar(): void {
     this.remove.emit(this.destino);
+  }
+
+  voteUp(): boolean {
+    this.store.dispatch(voteUpDestino({ destino: this.destino }));
+    return false;
+  }
+
+  voteDown(): boolean {
+    this.store.dispatch(voteDownDestino({ destino: this.destino }));
+    return false;
   }
 }

@@ -2,6 +2,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideRouter } from '@angular/router';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
+import { provideStoreDevtools } from '@ngrx/store-devtools';
 
 import { routes } from './app.routes';
 import { destinosReducer } from './store/destinos-viajes.reducer';
@@ -15,5 +16,8 @@ export const appConfig: ApplicationConfig = {
       destinos: destinosReducer,
     }),
     provideEffects([DestinosViajesEffects]),
+    provideStoreDevtools({
+      maxAge: 25,
+    }),
   ],
 };

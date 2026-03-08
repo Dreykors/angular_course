@@ -1,18 +1,23 @@
 import { createReducer, on } from '@ngrx/store';
 import { DestinoViajeModel } from '../models/destino-viaje.model';
 import { initialDestinosViajesState } from './destinos-viajes.state';
-import { addDestino, elegirFavorito, removeDestino } from './destinos-viajes.actions';
+import {
+  addDestino,
+  elegirFavorito,
+  removeDestino,
+  resetVotes,
+  voteDownDestino,
+  voteUpDestino,
+} from './destinos-viajes.actions';
 
 function clonarDestino(destino: DestinoViajeModel, selected = false): DestinoViajeModel {
-  const nuevo = new DestinoViajeModel(destino.nombre, destino.u);
-
-  if (selected) {
-    nuevo.setSelected(true);
-  } else {
-    nuevo.setSelected(false);
-  }
-
+  const nuevo = new DestinoViajeModel(destino.nombre, destino.u, destino.votes);
+  nuevo.setSelected(selected);
   return nuevo;
+}
+
+function esMismoDestino(a: DestinoViajeModel, b: DestinoViajeModel): boolean {
+  return a.nombre === b.nombre && a.u === b.u;
 }
 
 function removerPrimeraCoincidencia(
@@ -22,7 +27,7 @@ function removerPrimeraCoincidencia(
   let eliminado = false;
 
   return items.filter((item) => {
-    if (!eliminado && item.nombre === destino.nombre && item.u === destino.u) {
+    if (!eliminado && esMismoDestino(item, destino)) {
       eliminado = true;
       return false;
     }
@@ -44,10 +49,7 @@ export const destinosReducer = createReducer(
     );
 
     const favoritoSigueExistiendo =
-      state.favorito != null &&
-      nuevosItems.some(
-        (item) => item.nombre === state.favorito!.nombre && item.u === state.favorito!.u,
-      );
+      state.favorito != null && nuevosItems.some((item) => esMismoDestino(item, state.favorito!));
 
     return {
       ...state,
@@ -58,11 +60,71 @@ export const destinosReducer = createReducer(
 
   on(elegirFavorito, (state, { destino }) => {
     const nuevosItems = state.items.map((item) =>
-      clonarDestino(item, item.nombre === destino.nombre && item.u === destino.u),
+      clonarDestino(item, esMismoDestino(item, destino)),
     );
 
+    const nuevoFavorito = nuevosItems.find((item) => esMismoDestino(item, destino)) ?? null;
+
+    return {
+      ...state,
+      items: nuevosItems,
+      favorito: nuevoFavorito,
+    };
+  }),
+
+  on(voteUpDestino, (state, { destino }) => {
+    const nuevosItems = state.items.map((item) => {
+      const nuevo = clonarDestino(item, item.isSelected());
+      if (esMismoDestino(item, destino)) {
+        nuevo.voteUp();
+      }
+      return nuevo;
+    });
+
     const nuevoFavorito =
-      nuevosItems.find((item) => item.nombre === destino.nombre && item.u === destino.u) ?? null;
+      state.favorito == null
+        ? null
+        : (nuevosItems.find((item) => esMismoDestino(item, state.favorito!)) ?? null);
+
+    return {
+      ...state,
+      items: nuevosItems,
+      favorito: nuevoFavorito,
+    };
+  }),
+
+  on(voteDownDestino, (state, { destino }) => {
+    const nuevosItems = state.items.map((item) => {
+      const nuevo = clonarDestino(item, item.isSelected());
+      if (esMismoDestino(item, destino)) {
+        nuevo.voteDown();
+      }
+      return nuevo;
+    });
+
+    const nuevoFavorito =
+      state.favorito == null
+        ? null
+        : (nuevosItems.find((item) => esMismoDestino(item, state.favorito!)) ?? null);
+
+    return {
+      ...state,
+      items: nuevosItems,
+      favorito: nuevoFavorito,
+    };
+  }),
+
+  on(resetVotes, (state) => {
+    const nuevosItems = state.items.map((item) => {
+      const nuevo = clonarDestino(item, item.isSelected());
+      nuevo.resetVotes();
+      return nuevo;
+    });
+
+    const nuevoFavorito =
+      state.favorito == null
+        ? null
+        : (nuevosItems.find((item) => esMismoDestino(item, state.favorito!)) ?? null);
 
     return {
       ...state,

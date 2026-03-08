@@ -8,7 +8,12 @@ import { FormDestinoViaje } from '../form-destino-viaje/form-destino-viaje';
 
 import { AppState } from '../store/destinos-viajes.state';
 import { selectDestinosFavorito, selectDestinosItems } from '../store/destinos-viajes.selectors';
-import { addDestino, elegirFavorito, removeDestino } from '../store/destinos-viajes.actions';
+import {
+  addDestino,
+  elegirFavorito,
+  removeDestino,
+  resetVotes,
+} from '../store/destinos-viajes.actions';
 
 @Component({
   selector: 'app-lista-destinos',
@@ -44,5 +49,9 @@ export class ListaDestinos {
 
   borrado(d: DestinoViajeModel): void {
     this.store.dispatch(removeDestino({ destino: d }));
+  }
+
+  resetearVotos(): void {
+    this.store.dispatch(resetVotes());
   }
 }
