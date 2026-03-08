@@ -4,8 +4,8 @@
     <hr class="my-5" />
 
     <div class="row row-flex">
-        <app-destino-viaje *ngFor="let d of destinos; let i = index" [destino]="d" [idx]="i + 1"
-            (clicked)="elegido($event)"></app-destino-viaje>
+        <app-destino-viaje *ngFor="let d of (destinos$ | async); let i = index" [destino]="d" [idx]="i + 1"
+            (clicked)="elegido($event)" (remove)="borrado($event)"></app-destino-viaje>
     </div>
 
     <hr class="my-4" />

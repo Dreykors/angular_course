@@ -2,28 +2,35 @@
     <div class="card-img">
         <img src="https://picsum.photos/seed/nature/600/350" class="card-img-top" alt="Destino" />
         <span>
-            <h4>{{position}}</h4>
+            <h4>{{ position }}</h4>
         </span>
     </div>
 
     <div class="card-desc">
-        <h3>{{destino.nombre}}</h3>
-        <p>
-            Servicios
-        </p>
+        <h3>{{ destino.nombre }}</h3>
+        <p>Servicios</p>
+
         <ul>
             <li *ngFor="let s of destino.servicios">
-                <span [ngSwitch]="s">
-                    <i *ngSwitchCase="'desayuno'" style="color: red">{{s}}</i>
-                    <i *ngSwitchDefault>{{s}}</i>
+                <span>
+                    <i *ngIf="s === 'desayuno'" style="color: red">{{ s }}</i>
+                    <i *ngIf="s !== 'desayuno'">{{ s }}</i>
                 </span>
             </li>
         </ul>
 
-        <a href="#" class="btn-card" (click)="ir()">Ir!</a>
+        <button type="button" class="btn btn-success btn-sm me-2" (click)="ir()">IR</button>
+
+        <button type="button" class="btn btn-danger btn-sm me-2" (click)="borrar()">
+            Borrar
+        </button>
+
         <span *ngIf="destino.isSelected()">
-            <span ngNonBindable>{{PREFERIDO}}</span>
+            {{ '{PREFERIDO}' }}
         </span>
-        <a [routerLink]="['/destino']">ver detalle </a>
+
+        <span class="ms-2">
+            <a [routerLink]="['/destino']">ver detalle</a>
+        </span>
     </div>
 </div>
