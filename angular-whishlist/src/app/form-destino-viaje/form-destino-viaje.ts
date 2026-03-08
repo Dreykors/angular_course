@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DestinoViajeModel } from '../models/destino-viaje.model';
 
 @Component({
@@ -16,8 +16,8 @@ export class FormDestinoViaje {
   private fb = inject(FormBuilder);
 
   fg = this.fb.group({
-    nombre: [''],
-    url: [''],
+    nombre: ['', Validators.required],
+    url: ['', Validators.required],
   });
 
   constructor() {
@@ -26,15 +26,21 @@ export class FormDestinoViaje {
     });
   }
 
-  guardar(nombre: string | null, url: string | null): boolean {
-    const d = new DestinoViajeModel(nombre ?? '', url ?? '');
+  guardar(): void {
+    if (this.fg.invalid) {
+      this.fg.markAllAsTouched();
+      return;
+    }
+
+    const nombre = this.fg.get('nombre')?.value ?? '';
+    const url = this.fg.get('url')?.value ?? '';
+
+    const d = new DestinoViajeModel(nombre, url);
     this.onItemAdded.emit(d);
 
     this.fg.reset({
       nombre: '',
       url: '',
     });
-
-    return false;
   }
 }
