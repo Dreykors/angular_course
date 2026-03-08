@@ -4,15 +4,15 @@
       <h1>Ruteo Simple</h1>
       <div class="navLinks">
         <a [routerLink]="['/home']">Home</a>
-        <a [routerLink]="['/destino']">destino</a>
+        <a [routerLink]="['/destino']">Destino</a>
+        <a [routerLink]="['/login']">Login</a>
+        <a [routerLink]="['/protected']">Protected</a>
       </div>
     </div>
   </div>
 
   <div class="row">
-    <h1>
-      {{ title() }}
-    </h1>
+    <h1>{{ title() }}</h1>
   </div>
 
   <router-outlet></router-outlet>
