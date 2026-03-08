@@ -1,6 +1,13 @@
 import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { DestinoViajeModel } from '../models/destino-viaje.model';
 
 @Component({
@@ -15,8 +22,17 @@ export class FormDestinoViaje {
 
   private fb = inject(FormBuilder);
 
+  minLongitud = 3;
+
   fg = this.fb.group({
-    nombre: ['', Validators.required],
+    nombre: [
+      '',
+      Validators.compose([
+        Validators.required,
+        this.nombreValidator,
+        this.nombreValidatorParametrizable(this.minLongitud),
+      ]),
+    ],
     url: ['', Validators.required],
   });
 
@@ -24,6 +40,28 @@ export class FormDestinoViaje {
     this.fg.valueChanges.subscribe((value) => {
       console.log('Cambios en el formulario:', value);
     });
+  }
+
+  nombreValidator(control: AbstractControl): ValidationErrors | null {
+    const l = (control.value ?? '').toString().trim().length;
+
+    if (l > 0 && l < 5) {
+      return { invalidNombre: true };
+    }
+
+    return null;
+  }
+
+  nombreValidatorParametrizable(minLong: number): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const l = (control.value ?? '').toString().trim().length;
+
+      if (l > 0 && l < minLong) {
+        return { minLongNombre: true };
+      }
+
+      return null;
+    };
   }
 
   guardar(): void {

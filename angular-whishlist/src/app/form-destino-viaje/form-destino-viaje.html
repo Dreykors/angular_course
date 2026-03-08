@@ -13,9 +13,17 @@
                             formControlName="nombre" />
 
                         <div class="text-danger mt-1" *ngIf="fg.get('nombre')?.invalid && fg.get('nombre')?.touched">
-                            <span *ngIf="fg.get('nombre')?.hasError('required')">
+                            <div *ngIf="fg.get('nombre')?.hasError('required')">
                                 Nombre requerido
-                            </span>
+                            </div>
+
+                            <div *ngIf="fg.get('nombre')?.hasError('invalidNombre')">
+                                Nombre inválido
+                            </div>
+
+                            <div *ngIf="fg.get('nombre')?.hasError('minLongNombre')">
+                                Nombre debe tener al menos {{ minLongitud }} caracteres
+                            </div>
                         </div>
                     </div>
 
@@ -25,9 +33,9 @@
                             formControlName="url" />
 
                         <div class="text-danger mt-1" *ngIf="fg.get('url')?.invalid && fg.get('url')?.touched">
-                            <span *ngIf="fg.get('url')?.hasError('required')">
+                            <div *ngIf="fg.get('url')?.hasError('required')">
                                 URL requerida
-                            </span>
+                            </div>
                         </div>
                     </div>
 
