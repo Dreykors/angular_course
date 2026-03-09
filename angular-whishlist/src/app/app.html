@@ -1,20 +1,34 @@
 <div class="container content">
   <div class="page-header">
-    <div class="container">
-      <h1>Ruteo Simple</h1>
-      <div class="navLinks">
-        <a [routerLink]="['/home']">Home</a>
-        <a [routerLink]="['/destino']">Destino</a>
-        <a [routerLink]="['/login']">Login</a>
-        <a [routerLink]="['/protected']">Protected</a>
-        <a [routerLink]="['/vuelos']">Vuelos</a>
-        <a [routerLink]="['/reservas']">Reservas</a>
+    <div class="container d-flex justify-content-between align-items-start flex-wrap gap-3">
+      <div>
+        <h1>Ruteo Simple</h1>
+
+        <div class="navLinks">
+          <a [routerLink]="['/home']">Home</a>
+          <a [routerLink]="['/destino']">destino</a>
+          <a [routerLink]="['/login']">login</a>
+          <a [routerLink]="['/protected']">protected</a>
+          <a [routerLink]="['/vuelos/main']">vuelos</a>
+          <a [routerLink]="['/reservas']">reservas</a>
+        </div>
+      </div>
+
+      <div class="text-end">
+        <label for="langSelect" class="form-label mb-1">{{ 'IDIOMA' | translate }}</label>
+        <select id="langSelect" class="form-select" (change)="cambiarIdioma($event)">
+          <option value="es" selected>Español</option>
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+        </select>
       </div>
     </div>
   </div>
 
   <div class="row">
     <h1>{{ title() }}</h1>
+    <h3>{{ 'HOLA' | translate }}</h3>
+    <p>{{ 'BIENVENIDA' | translate }}</p>
   </div>
 
   <router-outlet></router-outlet>
