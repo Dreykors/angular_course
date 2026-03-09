@@ -29,3 +29,8 @@ export const voteDownDestino = createAction(
 export const resetVotes = createAction('[Destinos] Reset Votes');
 
 export const initMyData = createAction('[Destinos] Init My Data', props<{ destinos: string[] }>());
+
+export const initFromDexie = createAction(
+  '[Destinos] Init From Dexie',
+  props<{ destinos: DestinoViajeModel[] }>(),
+);

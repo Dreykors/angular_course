@@ -4,6 +4,7 @@ import { initialDestinosViajesState } from './destinos-viajes.state';
 import {
   addDestino,
   elegirFavorito,
+  initFromDexie,
   initMyData,
   removeDestino,
   resetVotes,
@@ -13,6 +14,7 @@ import {
 
 function clonarDestino(destino: DestinoViajeModel, selected = false): DestinoViajeModel {
   const nuevo = new DestinoViajeModel(destino.nombre, destino.u, destino.votes);
+  nuevo.servicios = [...destino.servicios];
   nuevo.setSelected(selected);
   return nuevo;
 }
@@ -45,6 +47,15 @@ export const destinosReducer = createReducer(
       (nombre) => new DestinoViajeModel(nombre, 'https://picsum.photos/seed/nature/600/350'),
     ),
     favorito: null,
+  })),
+
+  on(initFromDexie, (state, { destinos }) => ({
+    ...state,
+    items: destinos.map((d) => clonarDestino(d, d.isSelected())),
+    favorito:
+      destinos.find((d) => d.isSelected()) != null
+        ? clonarDestino(destinos.find((d) => d.isSelected()) as DestinoViajeModel, true)
+        : null,
   })),
 
   on(addDestino, (state, { destino }) => ({
