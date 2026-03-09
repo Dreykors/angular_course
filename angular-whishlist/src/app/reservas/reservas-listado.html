@@ -1,6 +1,23 @@
 <div class="mt-3">
     <p>reservas-listado works!</p>
 
+    <h4>Prueba de ReservasApiClient</h4>
+    <ul>
+        <li *ngFor="let r of reservas">
+            {{ r.id }} - {{ r.name }}
+        </li>
+    </ul>
+
+    <h4>Prueba de useExisting con ReservasApiClientViejo</h4>
+    <ul>
+        <li *ngFor="let r of reservasViejas">
+            {{ r.id }} - {{ r.name }}
+        </li>
+    </ul>
+
+    <h4>Prueba de InjectionToken</h4>
+    <p>API Endpoint: {{ config.apiEndpoint }}</p>
+
     <a class="btn btn-outline-primary btn-sm me-2" [routerLink]="['./10']">
         Ir al detalle
     </a>
