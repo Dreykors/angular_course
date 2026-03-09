@@ -5,15 +5,11 @@ import { Store } from '@ngrx/store';
 import { DestinoViaje } from '../destino-viaje/destino-viaje';
 import { DestinoViajeModel } from '../models/destino-viaje.model';
 import { FormDestinoViaje } from '../form-destino-viaje/form-destino-viaje';
+import { DestinosApiClient } from '../models/destinos-api-client';
 
 import { AppState } from '../store/destinos-viajes.state';
 import { selectDestinosFavorito, selectDestinosItems } from '../store/destinos-viajes.selectors';
-import {
-  addDestino,
-  elegirFavorito,
-  removeDestino,
-  resetVotes,
-} from '../store/destinos-viajes.actions';
+import { removeDestino, resetVotes } from '../store/destinos-viajes.actions';
 
 @Component({
   selector: 'app-lista-destinos',
@@ -26,6 +22,7 @@ export class ListaDestinos {
   @Output() onItemAdded = new EventEmitter<DestinoViajeModel>();
 
   private store = inject(Store<AppState>);
+  private destinosApiClient = inject(DestinosApiClient);
 
   destinos$ = this.store.select(selectDestinosItems);
   updates: string[] = [];
@@ -39,12 +36,12 @@ export class ListaDestinos {
   }
 
   agregado(d: DestinoViajeModel): void {
-    this.store.dispatch(addDestino({ destino: d }));
+    this.destinosApiClient.add(d);
     this.onItemAdded.emit(d);
   }
 
   elegido(d: DestinoViajeModel): void {
-    this.store.dispatch(elegirFavorito({ destino: d }));
+    this.destinosApiClient.elegir(d);
   }
 
   borrado(d: DestinoViajeModel): void {

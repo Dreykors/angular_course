@@ -4,6 +4,7 @@ import { initialDestinosViajesState } from './destinos-viajes.state';
 import {
   addDestino,
   elegirFavorito,
+  initMyData,
   removeDestino,
   resetVotes,
   voteDownDestino,
@@ -37,6 +38,14 @@ function removerPrimeraCoincidencia(
 
 export const destinosReducer = createReducer(
   initialDestinosViajesState,
+
+  on(initMyData, (state, { destinos }) => ({
+    ...state,
+    items: destinos.map(
+      (nombre) => new DestinoViajeModel(nombre, 'https://picsum.photos/seed/nature/600/350'),
+    ),
+    favorito: null,
+  })),
 
   on(addDestino, (state, { destino }) => ({
     ...state,

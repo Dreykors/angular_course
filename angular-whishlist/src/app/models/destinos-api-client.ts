@@ -1,30 +1,56 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Inject, Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { Store } from '@ngrx/store';
+
+import { APP_CONFIG, AppConfig } from '../app-config';
+import { AppState } from '../store/destinos-viajes.state';
+import { addDestino, elegirFavorito, initMyData } from '../store/destinos-viajes.actions';
 import { DestinoViajeModel } from './destino-viaje.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DestinosApiClient {
-  destinos: DestinoViajeModel[] = [];
+  constructor(
+    private http: HttpClient,
+    private store: Store<AppState>,
+    @Inject(APP_CONFIG) private config: AppConfig,
+  ) {}
 
-  current = new BehaviorSubject<DestinoViajeModel | null>(null);
+  async getAll(): Promise<void> {
+    const headers = new HttpHeaders({
+      Authorization: 'token-demo',
+    });
 
-  add(d: DestinoViajeModel): void {
-    this.destinos.push(d);
+    const data = await firstValueFrom(
+      this.http.get<string[]>(`${this.config.apiEndpoint}/my`, {
+        headers,
+      }),
+    );
+
+    this.store.dispatch(initMyData({ destinos: data }));
   }
 
-  getAll(): DestinoViajeModel[] {
-    return this.destinos;
+  add(d: DestinoViajeModel): void {
+    const headers = new HttpHeaders({
+      Authorization: 'token-demo',
+    });
+
+    this.http
+      .post<{
+        status: number;
+        data: string[];
+      }>(`${this.config.apiEndpoint}/my`, { nuevo: d.nombre }, { headers })
+      .subscribe((response) => {
+        if (response.status === 200) {
+          this.store.dispatch(addDestino({ destino: d }));
+          this.store.dispatch(elegirFavorito({ destino: d }));
+        }
+      });
   }
 
   elegir(d: DestinoViajeModel): void {
-    this.destinos.forEach((x) => x.setSelected(false));
-    d.setSelected(true);
-    this.current.next(d);
-  }
-
-  subscribeOnChange(fn: (d: DestinoViajeModel | null) => void): void {
-    this.current.subscribe(fn);
+    this.store.dispatch(elegirFavorito({ destino: d }));
   }
 }
