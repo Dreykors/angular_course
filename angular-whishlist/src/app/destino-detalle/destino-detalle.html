@@ -1,1 +1,14 @@
-<p>destino-detalle works!</p>
+<div class="container py-4">
+    <h2>Detalle del destino</h2>
+    <p>Mapa de ejemplo con Mapbox sin token de acceso.</p>
+
+    <hr />
+
+    <div class="map-wrapper">
+        <mgl-map [style]="style" [zoom]="zoom" [center]="center" style="height: 450px; width: 100%">
+            <mgl-marker [lngLat]="markerLngLat">
+                <div class="marker-content" (click)="mostrarMensaje()">Hola mundo</div>
+            </mgl-marker>
+        </mgl-map>
+    </div>
+</div>

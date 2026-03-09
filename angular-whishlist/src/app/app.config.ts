@@ -3,12 +3,13 @@ import {
   importProvidersFrom,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
-import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { provideHttpClient } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { provideMapboxGL } from 'ngx-mapbox-gl';
 
 import { routes } from './app.routes';
 import { destinosReducer } from './store/destinos-viajes.reducer';
@@ -37,13 +38,16 @@ export const appConfig: ApplicationConfig = {
       useValue: APP_CONFIG_VALUE,
     },
 
+    provideMapboxGL({
+      accessToken: '',
+    }),
+
     importProvidersFrom(
       TranslateModule.forRoot({
-        defaultLanguage: 'es',
         loader: {
           provide: TranslateLoader,
           useClass: ApiTranslateLoader,
-          deps: [APP_CONFIG],
+          deps: [],
         },
       }),
     ),
