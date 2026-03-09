@@ -8,8 +8,8 @@ import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideHttpClient } from '@angular/common/http';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { provideMapboxGL } from 'ngx-mapbox-gl';
 
 import { routes } from './app.routes';
 import { destinosReducer } from './store/destinos-viajes.reducer';
@@ -22,6 +22,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(),
+    provideAnimations(),
 
     provideStore({
       destinos: destinosReducer,
@@ -38,16 +39,11 @@ export const appConfig: ApplicationConfig = {
       useValue: APP_CONFIG_VALUE,
     },
 
-    provideMapboxGL({
-      accessToken: '',
-    }),
-
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {
           provide: TranslateLoader,
           useClass: ApiTranslateLoader,
-          deps: [],
         },
       }),
     ),

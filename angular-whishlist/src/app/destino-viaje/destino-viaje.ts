@@ -1,11 +1,9 @@
-import { Component, EventEmitter, HostBinding, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
 import { RouterLinkWithHref } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 import { DestinoViajeModel } from '../models/destino-viaje.model';
-import { AppState } from '../store/destinos-viajes.state';
-import { voteDownDestino, voteUpDestino } from '../store/destinos-viajes.actions';
 
 @Component({
   selector: 'app-destino-viaje',
@@ -13,6 +11,24 @@ import { voteDownDestino, voteUpDestino } from '../store/destinos-viajes.actions
   imports: [CommonModule, RouterLinkWithHref],
   templateUrl: './destino-viaje.html',
   styleUrl: './destino-viaje.css',
+  animations: [
+    trigger('esFavorito', [
+      state(
+        'esFavorito',
+        style({
+          backgroundColor: '#1abc9c',
+        }),
+      ),
+      state(
+        'noEsFavorito',
+        style({
+          backgroundColor: 'whitesmoke',
+        }),
+      ),
+      transition('noEsFavorito => esFavorito', [animate('3s')]),
+      transition('esFavorito => noEsFavorito', [animate('1s')]),
+    ]),
+  ],
 })
 export class DestinoViaje {
   @Input() destino!: DestinoViajeModel;
@@ -23,8 +39,6 @@ export class DestinoViaje {
   @Output() clicked = new EventEmitter<DestinoViajeModel>();
   @Output() remove = new EventEmitter<DestinoViajeModel>();
 
-  private store = inject(Store<AppState>);
-
   ir(): boolean {
     this.clicked.emit(this.destino);
     return false;
@@ -32,15 +46,5 @@ export class DestinoViaje {
 
   borrar(): void {
     this.remove.emit(this.destino);
-  }
-
-  voteUp(): boolean {
-    this.store.dispatch(voteUpDestino({ destino: this.destino }));
-    return false;
-  }
-
-  voteDown(): boolean {
-    this.store.dispatch(voteDownDestino({ destino: this.destino }));
-    return false;
   }
 }

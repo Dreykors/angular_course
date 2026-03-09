@@ -1,4 +1,4 @@
-<div class="card-content">
+<div class="card-content" [@esFavorito]="destino.isSelected() ? 'esFavorito' : 'noEsFavorito'">
     <div class="card-img">
         <img src="https://picsum.photos/seed/nature/600/350" class="card-img-top" alt="Destino" />
         <span>
@@ -18,18 +18,6 @@
                 </span>
             </li>
         </ul>
-
-        <div class="mb-2">
-            <button type="button" class="btn btn-outline-success btn-sm me-2" (click)="voteUp()">
-                👍
-            </button>
-
-            <button type="button" class="btn btn-outline-danger btn-sm me-2" (click)="voteDown()">
-                👎
-            </button>
-
-            <span><strong>Votos:</strong> {{ destino.votes }}</span>
-        </div>
 
         <button type="button" class="btn btn-success btn-sm me-2" (click)="ir()">IR</button>
 
