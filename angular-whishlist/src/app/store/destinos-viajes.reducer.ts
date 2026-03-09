@@ -1,26 +1,25 @@
 import { createReducer, on } from '@ngrx/store';
+
 import { DestinoViajeModel } from '../models/destino-viaje.model';
 import { initialDestinosViajesState } from './destinos-viajes.state';
 import {
   addDestino,
-  elegirFavorito,
-  initFromDexie,
-  initMyData,
   removeDestino,
+  elegirFavorito,
+  voteUp,
+  voteDown,
   resetVotes,
-  voteDownDestino,
-  voteUpDestino,
+  trackTagClick,
+  initFromDexie,
 } from './destinos-viajes.actions';
 
 function clonarDestino(destino: DestinoViajeModel, selected = false): DestinoViajeModel {
-  const nuevo = new DestinoViajeModel(destino.nombre, destino.u, destino.votes);
-  nuevo.servicios = [...destino.servicios];
-  nuevo.setSelected(selected);
-  return nuevo;
-}
+  const nuevo = new DestinoViajeModel(destino.nombre, destino.u);
 
-function esMismoDestino(a: DestinoViajeModel, b: DestinoViajeModel): boolean {
-  return a.nombre === b.nombre && a.u === b.u;
+  nuevo.votes = destino.votes ?? 0;
+  nuevo.setSelected(selected);
+
+  return nuevo;
 }
 
 function removerPrimeraCoincidencia(
@@ -30,7 +29,7 @@ function removerPrimeraCoincidencia(
   let eliminado = false;
 
   return items.filter((item) => {
-    if (!eliminado && esMismoDestino(item, destino)) {
+    if (!eliminado && item.nombre === destino.nombre && item.u === destino.u) {
       eliminado = true;
       return false;
     }
@@ -40,23 +39,6 @@ function removerPrimeraCoincidencia(
 
 export const destinosReducer = createReducer(
   initialDestinosViajesState,
-
-  on(initMyData, (state, { destinos }) => ({
-    ...state,
-    items: destinos.map(
-      (nombre) => new DestinoViajeModel(nombre, 'https://picsum.photos/seed/nature/600/350'),
-    ),
-    favorito: null,
-  })),
-
-  on(initFromDexie, (state, { destinos }) => ({
-    ...state,
-    items: destinos.map((d) => clonarDestino(d, d.isSelected())),
-    favorito:
-      destinos.find((d) => d.isSelected()) != null
-        ? clonarDestino(destinos.find((d) => d.isSelected()) as DestinoViajeModel, true)
-        : null,
-  })),
 
   on(addDestino, (state, { destino }) => ({
     ...state,
@@ -69,7 +51,10 @@ export const destinosReducer = createReducer(
     );
 
     const favoritoSigueExistiendo =
-      state.favorito != null && nuevosItems.some((item) => esMismoDestino(item, state.favorito!));
+      state.favorito !== null &&
+      nuevosItems.some(
+        (item) => item.nombre === state.favorito!.nombre && item.u === state.favorito!.u,
+      );
 
     return {
       ...state,
@@ -79,11 +64,13 @@ export const destinosReducer = createReducer(
   }),
 
   on(elegirFavorito, (state, { destino }) => {
-    const nuevosItems = state.items.map((item) =>
-      clonarDestino(item, esMismoDestino(item, destino)),
-    );
+    const nuevosItems = state.items.map((item) => {
+      const esFavorito = item.nombre === destino.nombre && item.u === destino.u;
+      return clonarDestino(item, esFavorito);
+    });
 
-    const nuevoFavorito = nuevosItems.find((item) => esMismoDestino(item, destino)) ?? null;
+    const nuevoFavorito =
+      nuevosItems.find((item) => item.nombre === destino.nombre && item.u === destino.u) ?? null;
 
     return {
       ...state,
@@ -92,45 +79,51 @@ export const destinosReducer = createReducer(
     };
   }),
 
-  on(voteUpDestino, (state, { destino }) => {
+  on(voteUp, (state, { destino }) => {
     const nuevosItems = state.items.map((item) => {
       const nuevo = clonarDestino(item, item.isSelected());
-      if (esMismoDestino(item, destino)) {
+
+      if (item.nombre === destino.nombre && item.u === destino.u) {
         nuevo.voteUp();
       }
+
       return nuevo;
     });
 
     const nuevoFavorito =
-      state.favorito == null
-        ? null
-        : (nuevosItems.find((item) => esMismoDestino(item, state.favorito!)) ?? null);
+      state.favorito &&
+      nuevosItems.find(
+        (item) => item.nombre === state.favorito!.nombre && item.u === state.favorito!.u,
+      );
 
     return {
       ...state,
       items: nuevosItems,
-      favorito: nuevoFavorito,
+      favorito: nuevoFavorito ?? state.favorito,
     };
   }),
 
-  on(voteDownDestino, (state, { destino }) => {
+  on(voteDown, (state, { destino }) => {
     const nuevosItems = state.items.map((item) => {
       const nuevo = clonarDestino(item, item.isSelected());
-      if (esMismoDestino(item, destino)) {
+
+      if (item.nombre === destino.nombre && item.u === destino.u) {
         nuevo.voteDown();
       }
+
       return nuevo;
     });
 
     const nuevoFavorito =
-      state.favorito == null
-        ? null
-        : (nuevosItems.find((item) => esMismoDestino(item, state.favorito!)) ?? null);
+      state.favorito &&
+      nuevosItems.find(
+        (item) => item.nombre === state.favorito!.nombre && item.u === state.favorito!.u,
+      );
 
     return {
       ...state,
       items: nuevosItems,
-      favorito: nuevoFavorito,
+      favorito: nuevoFavorito ?? state.favorito,
     };
   }),
 
@@ -142,14 +135,45 @@ export const destinosReducer = createReducer(
     });
 
     const nuevoFavorito =
-      state.favorito == null
-        ? null
-        : (nuevosItems.find((item) => esMismoDestino(item, state.favorito!)) ?? null);
+      state.favorito &&
+      nuevosItems.find(
+        (item) => item.nombre === state.favorito!.nombre && item.u === state.favorito!.u,
+      );
 
     return {
       ...state,
       items: nuevosItems,
-      favorito: nuevoFavorito,
+      favorito: nuevoFavorito ?? state.favorito,
+    };
+  }),
+
+  on(trackTagClick, (state, { tag }) => ({
+    ...state,
+    tracking: {
+      ...state.tracking,
+      [tag]: (state.tracking?.[tag] ?? 0) + 1,
+    },
+  })),
+
+  on(initFromDexie, (state, { destinos }) => {
+    const items = destinos.map((destino) => {
+      const nuevo = new DestinoViajeModel(destino.nombre, destino.u);
+
+      nuevo.votes = destino.votes ?? 0;
+
+      if (destino.isSelected()) {
+        nuevo.setSelected(true);
+      }
+
+      return nuevo;
+    });
+
+    const favorito = items.find((item) => item.isSelected()) ?? null;
+
+    return {
+      ...state,
+      items,
+      favorito,
     };
   }),
 );

@@ -16,19 +16,16 @@ export const elegirFavorito = createAction(
   props<{ destino: DestinoViajeModel }>(),
 );
 
-export const voteUpDestino = createAction(
-  '[Destinos] Vote Up Destino',
-  props<{ destino: DestinoViajeModel }>(),
-);
+export const voteUp = createAction('[Destinos] Vote Up', props<{ destino: DestinoViajeModel }>());
 
-export const voteDownDestino = createAction(
-  '[Destinos] Vote Down Destino',
+export const voteDown = createAction(
+  '[Destinos] Vote Down',
   props<{ destino: DestinoViajeModel }>(),
 );
 
 export const resetVotes = createAction('[Destinos] Reset Votes');
 
-export const initMyData = createAction('[Destinos] Init My Data', props<{ destinos: string[] }>());
+export const trackTagClick = createAction('[Tracking] Track Tag Click', props<{ tag: string }>());
 
 export const initFromDexie = createAction(
   '[Destinos] Init From Dexie',

@@ -1,25 +1,28 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { DestinoViaje } from '../destino-viaje/destino-viaje';
-import { DestinoViajeModel } from '../models/destino-viaje.model';
 import { FormDestinoViaje } from '../form-destino-viaje/form-destino-viaje';
+import { DestinoViajeModel } from '../models/destino-viaje.model';
 
 import { AppState } from '../store/destinos-viajes.state';
-import { selectDestinosFavorito, selectDestinosItems } from '../store/destinos-viajes.selectors';
 import {
   addDestino,
   elegirFavorito,
   removeDestino,
   resetVotes,
 } from '../store/destinos-viajes.actions';
-import { Espia } from '../espia';
+import {
+  selectDestinosFavorito,
+  selectDestinosItems,
+  selectTracking,
+} from '../store/destinos-viajes.selectors';
 
 @Component({
   selector: 'app-lista-destinos',
   standalone: true,
-  imports: [CommonModule, DestinoViaje, FormDestinoViaje, Espia],
+  imports: [CommonModule, DestinoViaje, FormDestinoViaje],
   templateUrl: './lista-destinos.html',
   styleUrl: './lista-destinos.css',
 })
@@ -29,6 +32,8 @@ export class ListaDestinos {
   private store = inject(Store<AppState>);
 
   destinos$ = this.store.select(selectDestinosItems);
+  tracking$ = this.store.select(selectTracking);
+
   updates: string[] = [];
 
   constructor() {
@@ -54,5 +59,12 @@ export class ListaDestinos {
 
   resetearVotos(): void {
     this.store.dispatch(resetVotes());
+  }
+
+  trackingKeys(tracking: Record<string, number> | null): string[] {
+    if (!tracking) {
+      return [];
+    }
+    return Object.keys(tracking);
   }
 }

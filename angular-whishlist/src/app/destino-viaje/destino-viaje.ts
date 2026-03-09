@@ -1,34 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, Output, inject } from '@angular/core';
 import { RouterLinkWithHref } from '@angular/router';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Store } from '@ngrx/store';
 
 import { DestinoViajeModel } from '../models/destino-viaje.model';
+import { voteDown, voteUp } from '../store/destinos-viajes.actions';
+import { AppState } from '../store/destinos-viajes.state';
+import { TrackearClickDirective } from '../trackear-click.directive';
 
 @Component({
   selector: 'app-destino-viaje',
   standalone: true,
-  imports: [CommonModule, RouterLinkWithHref],
+  imports: [CommonModule, RouterLinkWithHref, TrackearClickDirective],
   templateUrl: './destino-viaje.html',
   styleUrl: './destino-viaje.css',
-  animations: [
-    trigger('esFavorito', [
-      state(
-        'esFavorito',
-        style({
-          backgroundColor: '#1abc9c',
-        }),
-      ),
-      state(
-        'noEsFavorito',
-        style({
-          backgroundColor: 'whitesmoke',
-        }),
-      ),
-      transition('noEsFavorito => esFavorito', [animate('3s')]),
-      transition('esFavorito => noEsFavorito', [animate('1s')]),
-    ]),
-  ],
 })
 export class DestinoViaje {
   @Input() destino!: DestinoViajeModel;
@@ -39,6 +24,8 @@ export class DestinoViaje {
   @Output() clicked = new EventEmitter<DestinoViajeModel>();
   @Output() remove = new EventEmitter<DestinoViajeModel>();
 
+  private store = inject(Store<AppState>);
+
   ir(): boolean {
     this.clicked.emit(this.destino);
     return false;
@@ -46,5 +33,15 @@ export class DestinoViaje {
 
   borrar(): void {
     this.remove.emit(this.destino);
+  }
+
+  voteUp(): boolean {
+    this.store.dispatch(voteUp({ destino: this.destino }));
+    return false;
+  }
+
+  voteDown(): boolean {
+    this.store.dispatch(voteDown({ destino: this.destino }));
+    return false;
   }
 }

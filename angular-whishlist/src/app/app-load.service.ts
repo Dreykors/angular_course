@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { DestinosApiClient } from './models/destinos-api-client';
+import { LoadFromDexieService } from './db/load-from-dexie.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AppLoadService {
-  constructor(private destinosApiClient: DestinosApiClient) {}
+  constructor(private loadFromDexieService: LoadFromDexieService) {}
 
   async initializeDestinosViajesState(): Promise<void> {
-    await this.destinosApiClient.getAll();
+    await this.loadFromDexieService.load();
   }
 }

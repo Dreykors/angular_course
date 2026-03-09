@@ -4,6 +4,7 @@ export interface DestinosViajesState {
   items: DestinoViajeModel[];
   favorito: DestinoViajeModel | null;
   loading: boolean;
+  tracking: Record<string, number>;
 }
 
 export interface AppState {
@@ -14,4 +15,5 @@ export const initialDestinosViajesState: DestinosViajesState = {
   items: [],
   favorito: null,
   loading: false,
+  tracking: {},
 };

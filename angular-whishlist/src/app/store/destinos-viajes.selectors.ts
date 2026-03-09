@@ -9,3 +9,5 @@ export const selectDestinosFavorito = createSelector(
   selectDestinosState,
   (state) => state.favorito,
 );
+
+export const selectTracking = createSelector(selectDestinosState, (state) => state.tracking);
