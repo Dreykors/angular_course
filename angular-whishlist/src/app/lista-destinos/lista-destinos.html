@@ -1,8 +1,8 @@
 <div class="container py-5">
     <app-form-destino-viaje (onItemAdded)="agregado($event)"></app-form-destino-viaje>
 
-    <div class="mt-3 mb-4 text-center">
-        <button type="button" class="btn btn-warning" (click)="resetearVotos()">
+    <div class="mt-3">
+        <button type="button" class="btn btn-warning btn-sm" (click)="resetearVotos()">
             Resetear votos
         </button>
     </div>
@@ -10,7 +10,7 @@
     <hr class="my-5" />
 
     <div class="row row-flex">
-        <app-destino-viaje *ngFor="let d of (destinos$ | async); let i = index" [destino]="d" [idx]="i + 1"
+        <app-destino-viaje *ngFor="let d of destinos$ | async; let i = index" appEspia [destino]="d" [idx]="i + 1"
             (clicked)="elegido($event)" (remove)="borrado($event)"></app-destino-viaje>
     </div>
 
